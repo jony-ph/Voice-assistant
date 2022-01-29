@@ -8,6 +8,7 @@ speechrecognition = "*"
 google-cloud-speech = "*"
 pyttsx3 = "==2.71"
 pyaudio = "*"
+playsound = "1.2.2"
 
 [dev-packages]
 

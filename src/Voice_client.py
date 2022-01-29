@@ -1,6 +1,8 @@
 import speech_recognition as sr
 import pyttsx3
 
+from playsound import playsound
+
 class Voice_client: 
 
     def __init__(self):
@@ -18,18 +20,19 @@ class Voice_client:
 
         with sr.Microphone() as source:
 
+            playsound('./assets/speak-beep.mp3')
             self.__listener.adjust_for_ambient_noise(source)
 
             try:
-                voice = self.__listener.listen(source, timeout=10, phrase_time_limit=15)
+                voice = self.__listener.listen(source, timeout=5, phrase_time_limit=10)
                 rec = self.__listener.recognize_google(voice, language='es-MX')
                 rec = rec.lower()
 
             except sr.WaitTimeoutError:
-                self.talk("Tiempo excedido")
+                playsound('./assets/finish-beep.mp3')
 
             except sr.UnknownValueError:
-                self.talk("No pude entender lo que dijiste. Intenta de nuevo, por favor")
+                self.talk("No pude entender lo que dijiste. Intenta de nuevo por favor")
                 return self.listen()
 
             except sr.RequestError as e:
