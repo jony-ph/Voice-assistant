@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 speechrecognition = "*"
 google-cloud-speech = "*"
+pyttsx3 = "==2.71"
+pyaudio = "*"
 
 [dev-packages]
 
