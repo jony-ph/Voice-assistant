@@ -3,28 +3,56 @@ import pyttsx3
 
 from playsound import playsound
 
-class Voice_client: 
+class Voice_Client: 
 
-    def __init__(self):
+    def __init__(self, voice_client_name):
         
+        self.voice_client_name = voice_client_name
+
         self.__listener = sr.Recognizer()
         self.__listener.energy_threshold = 4000
-        self.__listener.dynamic_energy_threshold = False
+        self.__listener.dynamic_energy_threshold = True
 
         self.__engine = pyttsx3.init()
         self.__engine.setProperty('rate', 150)
-        
-    def listen(self):
+
+    def handler_activator(self):
+
+        command = ''
+
+        with sr.Microphone(sample_rate=48000, chunk_size=2048) as source:
+
+            self.__listener.adjust_for_ambient_noise(source, duration=1)
+
+            try:
+                voice = self.__listener.listen(source, phrase_time_limit=2)
+                rec = self.__listener.recognize_google(voice, language='es-MX')
+                rec = rec.lower()
+
+                if self.voice_client_name in rec:
+
+                    command = self.listen_commands()
+
+            except sr.UnknownValueError:
+                pass
+
+            except sr.RequestError as e:
+                print("No se pudieron solicitar los resultados del servicio de reconocimiento de voz de Google; {0}".format(e))
+
+        return command
+
+
+    def listen_commands(self):
 
         rec = ''
 
-        with sr.Microphone() as source:
+        with sr.Microphone(sample_rate=48000, chunk_size=2048) as source:
 
             playsound('./assets/speak-beep.mp3')
-            self.__listener.adjust_for_ambient_noise(source)
+            self.__listener.adjust_for_ambient_noise(source, duration=1)
 
             try:
-                voice = self.__listener.listen(source, timeout=5, phrase_time_limit=10)
+                voice = self.__listener.listen(source, timeout=5, phrase_time_limit=5)
                 rec = self.__listener.recognize_google(voice, language='es-MX')
                 rec = rec.lower()
 
@@ -33,11 +61,10 @@ class Voice_client:
 
             except sr.UnknownValueError:
                 self.talk("No pude entender lo que dijiste. Intenta de nuevo por favor")
-                return self.listen()
+                return self.listen_commands()
 
             except sr.RequestError as e:
                 print("No se pudieron solicitar los resultados del servicio de reconocimiento de voz de Google; {0}".format(e))
-
 
         return rec
 
