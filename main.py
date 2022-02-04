@@ -20,6 +20,26 @@ def recognize_command(command):
                 function = key_words.key_words.index(words)
                 instruction = command.replace(key + ' ', '')
 
+    switcher(function, instruction)
+
+
+def switcher(function, instruction):
+
+    if function == 0:
+        engine.play()
+    elif function == 1:
+        engine.searches()
+    elif function == 3:
+        engine.launcher()
+    elif function == 4:
+        engine.current_time()
+    elif function == 5:
+        engine.current_date()
+    elif function == 6:
+        engine.grettings()
+    elif function == 7:
+        sys.exit()
+
 
 if __name__ == '__main__':
 
